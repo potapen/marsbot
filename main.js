@@ -1,8 +1,18 @@
+const instruction = {
+    "maxCommands": 100,
+    "maxNorth": 50,
+    "maxEast": 50
+}
+const maxCommands = 10
+const maxNorth = 10
+const maxEast = 10
+
 let robot = {
-    x:3,
-    y:2,
+    x:0,
+    y:1,
     d:'N'
 }
+
 
 
 const commands = ['F','F','L','F']
@@ -83,19 +93,69 @@ const deltaMove = (command, position) => {
     return delta
 }
 
+const moveForward = (delta, position, maxEast, maxNorth ) => {
+    const nextX = position.x + delta.x
+    const nextY = position.y + delta.y
+    let pNext
+    if(delta.x){
+        console.log('moving on x')
+        if(nextX<0 || nextX>=maxEast){
+        pNext = {
+            ...position,
+            offTheMap: true
+            }
+        }else{
+        pNext = {
+            ...position,
+            x:position.x + delta.x
+            }
+        }
+    }
+    else if(delta.y){     
+        if(nextY<0 || nextY>=maxNorth){
+            console.log('moving on y')
+            pNext = {
+                ...position,
+                offTheMap: true
+                }
+        }else{
+            pNext = {
+                ...position,
+                y:position.y + delta.y
+                }
+        }
+    }else{
+        pNext = {...position}
+    }
+    console.log('pNext', pNext)
+    return pNext
+}
 const move = (delta, position) => {
     const p = {...position}
-    p.x = p.x + delta.x
-    p.y = p.y + delta.y
-    p.d = delta.d
-    return p
+    //move forward if needed
+    const pNext = moveForward(delta, position, maxEast, maxNorth)
+    //rotate if needed
+    pNext.d = delta.d
+    return pNext
 }
 console.log('commands', commands)
-commands.forEach(direction => {
-    let delta = deltaMove(direction, robot)
+// commands.forEach(direction => {
+//     console.log('-----------------------------------')
+//     let delta = deltaMove(direction, robot)
+//     console.log('delta', delta)
+//     let newPosition = move(delta, robot)
+//     console.log('newPosition', newPosition)
+//     // console.log(`oldposition ${robot.x}|${robot.y}|${robot.d} direction: ${direction} delta :${delta.x}|${delta.y}|${delta.d} newPosition ${newPosition.x}|${newPosition.y}|${newPosition.d}`)
+//     robot = newPosition
+// })
+
+for(let i=0; i<commands.length;i++){
+    console.log('-----------------------------------')
+    const delta = deltaMove(commands[i], robot)
     console.log('delta', delta)
-    let newPosition = move(delta, robot)
+    const newPosition = move(delta, robot)
     console.log('newPosition', newPosition)
     // console.log(`oldposition ${robot.x}|${robot.y}|${robot.d} direction: ${direction} delta :${delta.x}|${delta.y}|${delta.d} newPosition ${newPosition.x}|${newPosition.y}|${newPosition.d}`)
     robot = newPosition
-})
+    if(robot.offTheMap){break}
+}
