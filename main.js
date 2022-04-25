@@ -139,23 +139,14 @@ const move = (delta, position) => {
     return pNext
 }
 console.log('commands', commands)
-// commands.forEach(direction => {
-//     console.log('-----------------------------------')
-//     let delta = deltaMove(direction, robot)
-//     console.log('delta', delta)
-//     let newPosition = move(delta, robot)
-//     console.log('newPosition', newPosition)
-//     // console.log(`oldposition ${robot.x}|${robot.y}|${robot.d} direction: ${direction} delta :${delta.x}|${delta.y}|${delta.d} newPosition ${newPosition.x}|${newPosition.y}|${newPosition.d}`)
-//     robot = newPosition
-// })
 
+//go through each commands (F,L,R) unless the robot is falling off the cliff
 for(let i=0; i<commands.length;i++){
     console.log('-----------------------------------')
     const delta = deltaMove(commands[i], robot)
     console.log('delta', delta)
     const newPosition = move(delta, robot)
     console.log('newPosition', newPosition)
-    // console.log(`oldposition ${robot.x}|${robot.y}|${robot.d} direction: ${direction} delta :${delta.x}|${delta.y}|${delta.d} newPosition ${newPosition.x}|${newPosition.y}|${newPosition.d}`)
     robot = newPosition
     if(robot.offTheMap){break}
 }
