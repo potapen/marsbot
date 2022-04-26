@@ -17,6 +17,8 @@ let robot = {
 
 const commands = ['F','F','L','F']
 
+
+//compute delta for F command
 const deltaForward = (position) => {
     console.log('moving forward')
     let delta = {}
@@ -37,6 +39,7 @@ const deltaForward = (position) => {
     return delta
 }
 
+//compute delta for L command
 const deltaLeft = (position) => {
     console.log('turning left')
     let delta = {}
@@ -57,6 +60,7 @@ const deltaLeft = (position) => {
     return delta
 }
 
+//compute delta for R command
 const deltaRight = (position) => {
     console.log('turning right')
     let delta = {}
@@ -76,6 +80,9 @@ const deltaRight = (position) => {
     }
     return delta
 }
+
+
+//compute delta move according to movement order (F,L or R)
 const deltaMove = (command, position) => {
     console.log('currentPosition', position)
     let delta = {}
@@ -93,6 +100,9 @@ const deltaMove = (command, position) => {
     return delta
 }
 
+
+
+//manage moving forward from current position and delta. The edge case are managed here
 const moveForward = (delta, position, maxEast, maxNorth ) => {
     const nextX = position.x + delta.x
     const nextY = position.y + delta.y
@@ -130,6 +140,8 @@ const moveForward = (delta, position, maxEast, maxNorth ) => {
     console.log('pNext', pNext)
     return pNext
 }
+
+//make a total move from current position and delta: moving forward AND rotation
 const move = (delta, position) => {
     const p = {...position}
     //move forward if needed
@@ -138,15 +150,21 @@ const move = (delta, position) => {
     pNext.d = delta.d
     return pNext
 }
-console.log('commands', commands)
 
-//go through each commands (F,L,R) unless the robot is falling off the cliff
-for(let i=0; i<commands.length;i++){
-    console.log('-----------------------------------')
-    const delta = deltaMove(commands[i], robot)
-    console.log('delta', delta)
-    const newPosition = move(delta, robot)
-    console.log('newPosition', newPosition)
-    robot = newPosition
-    if(robot.offTheMap){break}
+const main = () => {
+    //go through each commands (F,L,R) unless the robot is falling off the cliff
+    for(let i=0; i<commands.length;i++){
+        console.log('-----------------------------------')
+        //compute the next step (moving +/- on x or y, with final facing direction)
+        const delta = deltaMove(commands[i], robot)
+        console.log('delta', delta)
+        //compute the new position from current position and the delta
+        const newPosition = move(delta, robot)
+        console.log('newPosition', newPosition)
+        robot = newPosition
+        //the robot fell off the cliff, final position before falling is stored
+        if(robot.offTheMap){break} 
+    }
 }
+
+main()
